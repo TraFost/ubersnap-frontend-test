@@ -1,9 +1,10 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, Fragment } from "react";
 
 import { Card, Divider } from "@/components/atoms";
 import { Form, ImageUpload, ImageFilter } from "@/components/molecules";
 
 import { showToast } from "@/utils/toast";
+import { sleep } from "@/utils/helper";
 
 type Filter = {
 	ratio: string;
@@ -64,7 +65,10 @@ export default function Content() {
 
 	const removeImage = async () => {
 		setIsRemoved(true);
-		await resetState();
+		resetState();
+
+		await sleep(1000);
+
 		setIsRemoved(false);
 	};
 
@@ -79,10 +83,10 @@ export default function Content() {
 			/>
 
 			{!isImageUploaded && (
-				<>
+				<Fragment>
 					<Divider title="or" />
 					<Form uploadImageByUrl={uploadImageByUrl} getImageUrl={setImageUrl} />
-				</>
+				</Fragment>
 			)}
 
 			{isImageUploaded && (

@@ -27,17 +27,15 @@ export default function Image({
 		<div className="flex items-center justify-center flex-col">
 			{loading && <Loading />}
 
-			<figure className="w-full h-full">
-				<NextImage
-					src={src}
-					alt={`Image Of Mock`}
-					width={width}
-					height={height}
-					onLoad={() => setIsImageLoaded(true)}
-					className={`${loading ? "hidden" : "block"}`}
-					priority
-				/>
-			</figure>
+			<NextImage
+				src={src}
+				alt={`Image Of Mock`}
+				width={width}
+				height={height}
+				onLoad={() => setIsImageLoaded(true)}
+				className={`${loading ? "hidden" : "block"}`}
+				priority
+			/>
 		</div>
 	);
 }

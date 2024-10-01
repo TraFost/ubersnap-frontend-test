@@ -25,8 +25,15 @@ export const resizeImage = (src: cv.Mat, aspectRatio?: string): cv.Mat => {
 	let newHeight = originalHeight;
 
 	if (widthRatio && heightRatio) {
-		newWidth = Math.floor(originalHeight * (widthRatio / heightRatio));
-		newHeight = Math.floor(originalWidth * (heightRatio / widthRatio));
+		const targetAspectRatio = widthRatio / heightRatio;
+
+		if (originalWidth / originalHeight > targetAspectRatio) {
+			newHeight = originalHeight;
+			newWidth = Math.floor(originalHeight * targetAspectRatio);
+		} else {
+			newWidth = originalWidth;
+			newHeight = Math.floor(originalWidth / targetAspectRatio);
+		}
 	}
 
 	const dst = new cv.Mat();

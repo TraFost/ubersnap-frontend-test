@@ -30,7 +30,6 @@ export default function ImageUpload({
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [isDragging, setIsDragging] = useState<boolean>(false);
 
-	// Handles the image file upload
 	const processFile = (file: File | null) => {
 		if (file && file.size > 2097152) {
 			showToast("Image size should be less than 2MB", "error");
@@ -65,18 +64,27 @@ export default function ImageUpload({
 		return canvas;
 	};
 
-	// Handles image file input change
 	const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0] || null;
 		processFile(file);
 	};
 
-	// Handles image drag-and-drop
 	const handleDrop = (event: DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
 		setIsDragging(false);
 		const file = event.dataTransfer.files?.[0] || null;
 		processFile(file);
+	};
+
+	// Cleans up the canvas and Mat objects
+	const cleanUp = (
+		dst: cv.Mat,
+		resizedImg: cv.Mat,
+		canvas: HTMLCanvasElement
+	) => {
+		dst.delete();
+		resizedImg.delete();
+		canvas.remove();
 	};
 
 	// Applies the selected filter to the image
@@ -117,16 +125,6 @@ export default function ImageUpload({
 		cleanUp(dst, resizedImg, canvas);
 	};
 
-	const cleanUp = (
-		dst: cv.Mat,
-		resizedImg: cv.Mat,
-		canvas: HTMLCanvasElement
-	) => {
-		dst.delete();
-		resizedImg.delete();
-		canvas.remove();
-	};
-
 	useEffect(() => {
 		if (imageUrl) {
 			setPreviewUrl(imageUrl);
@@ -142,14 +140,9 @@ export default function ImageUpload({
 	useEffect(() => {
 		if (isRemoved) {
 			setPreviewUrl(null);
+			onImageUpload(null);
 		}
-	}, [isRemoved]);
-
-	useEffect(() => {
-		return () => {
-			srcMat?.delete();
-		};
-	}, [srcMat]);
+	}, [isRemoved, onImageUpload]);
 
 	return (
 		<div
@@ -176,10 +169,7 @@ export default function ImageUpload({
 						withLoading
 						width={500}
 						height={10}
-						sizes="(max-width: 768px) 100vw,
-                               (max-width: 1200px) 50vw,
-                               33vw"
-						style={{ height: "100%", width: "100%" }}
+						style={{ width: "100%", height: "100%" }}
 					/>
 				) : (
 					<div className="flex flex-col items-center space-y-1">
