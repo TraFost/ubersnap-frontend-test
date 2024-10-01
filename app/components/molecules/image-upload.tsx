@@ -9,7 +9,6 @@ import {
 	applyCannyEdgeFilter,
 } from "@/utils/open-cv";
 import { showToast } from "@/utils/toast";
-import { fetchExternalImage } from "@/utils/helper";
 import UploadIcons from "@assets/upload.png";
 
 interface ImageUploadProps {
@@ -136,7 +135,8 @@ export default function ImageUpload({
 					reader.onloadend = () => loadImage(reader.result as string);
 					reader.readAsDataURL(blob);
 					setPreviewUrl(response.url);
-				} catch (error) {
+				} catch (err) {
+					console.error(err);
 					showToast("Failed to load external image", "error");
 				}
 			};
