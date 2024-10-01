@@ -1,3 +1,7 @@
+"use client";
+import React from "react";
+import { HomeContent } from "@/components/organisms";
+
 export default function Home() {
-	return <button className="btn btn-primary">This is a button</button>;
+	return <HomeContent />;
 }
