@@ -9,6 +9,7 @@ import {
 	applyCannyEdgeFilter,
 } from "@/utils/open-cv";
 import { showToast } from "@/utils/toast";
+import { fetchExternalImage } from "@/utils/helper";
 import UploadIcons from "@assets/upload.png";
 
 interface ImageUploadProps {
@@ -127,9 +128,22 @@ export default function ImageUpload({
 
 	useEffect(() => {
 		if (imageUrl) {
-			setPreviewUrl(imageUrl);
+			const fetchExternalImage = async (imageSrc: string) => {
+				try {
+					const response = await fetch(imageSrc);
+					const blob = await response.blob();
+					const reader = new FileReader();
+					reader.onloadend = () => loadImage(reader.result as string);
+					reader.readAsDataURL(blob);
+					setPreviewUrl(response.url);
+				} catch (error) {
+					showToast("Failed to load external image", "error");
+				}
+			};
+
+			fetchExternalImage(imageUrl);
 		}
-	}, [imageUrl]);
+	}, [imageUrl, setPreviewUrl]);
 
 	useEffect(() => {
 		if (srcMat) {
